@@ -1,1 +1,35 @@
+import time
+
+def Naiıveiterative (a, n):
+    result = 1
+    for _ in range(n):
+        result *= a
+    return result
+
+def divideandconquer(a, n):
+    if n == 0:
+        return 1
+    elif n % 2 == 0:
+        half = divideandconquer(a, n // 2)
+        return half * half
+    else:
+        half = divideandconquer(a, (n - 1) // 2)
+        return a * half * half
+    import time
+
+n_values = [10, 100, 1000, 10000, 100000, 1000000]  # Add more values as needed
+
+for n in n_values:
+    start_time = time.time()
+    power_iterative(2, n)  # Replace 2 with the base value 'a'
+    end_time = time.time()
+    print(f"n = {n}, Iterative Time = {end_time - start_time} seconds")
+
+    start_time = time.time()
+    power_divide_conquer(2, n)  # Replace 2 with the base value 'a'
+    end_time = time.time()
+    print(f"n = {n}, Divide and Conquer Time = {end_time - start_time} seconds")
+
+
+    
 

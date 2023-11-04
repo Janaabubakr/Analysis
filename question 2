@@ -1,1 +1,59 @@
+def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        left_half = arr[:mid]
+        right_half = arr[mid:]
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        i, j = 0, 0
+
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] + right_half[j] == target:
+                print(f"Pair: ({left_half[i]}, {right_half[j]})")
+                i += 1
+                j += 1
+            elif left_half[i] + right_half[j] < target:
+                i += 1
+            else:
+                j += 1
+
+def find_pairs_with_sum(S, target):
+    merge_sort(S)
+    
+S = [1, 4, 2, 3, 5, 6, 7, 8]
+target = 9
+find_pairs_with_sum(S, target)
+
+
+import time
+import matplotlib.pyplot as plt
+
+def merge_sort(arr):
+    # Sorting algorithm (merge sort)
+
+def find_pairs_with_sum(S, target):
+    merge_sort(S)
+
+n_values = [10, 100, 1000, 10000, 100000, 1000000]  # Different 'n' values
+
+execution_times = []
+
+for n in n_values:
+    S = list(range(1, n + 1))  # List of numbers from 1 to n
+    target = n // 2  # Target sum (half of n)
+
+    start_time = time.time()
+    find_pairs_with_sum(S, target)
+    end_time = time.time()
+    execution_times.append(end_time - start_time)
+
+plt.plot(n_values, execution_times, marker='o', linestyle='-')
+plt.xlabel("Input Size (n)")
+plt.ylabel("Execution Time (seconds)")
+plt.title("Algorithm Performance")
+plt.grid()
+plt.show()
+
 
