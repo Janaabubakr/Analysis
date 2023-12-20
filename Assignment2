@@ -1,0 +1,58 @@
+def align_sequences(x, y, scoring_matrix):
+    n = len(x)
+    m = len(y)
+    gap_penalty = -1
+
+    # Initialize the score matrix and traceback matrix
+    score_matrix = [[0] * (m + 1) for _ in range(n + 1)]
+    traceback_matrix = [[0] * (m + 1) for _ in range(n + 1)]
+
+    # Fill the first row and first column with gap penalties
+    for i in range(1, n + 1):
+        score_matrix[i][0] = i * gap_penalty
+        traceback_matrix[i][0] = 'U'  # 'U' represents going up
+
+    for j in range(1, m + 1):
+        score_matrix[0][j] = j * gap_penalty
+        traceback_matrix[0][j] = 'L'  # 'L' represents going left
+
+    # Fill the score and traceback matrices using dynamic programming
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            match_score = scoring_matrix[x[i - 1]][y[j - 1]]
+
+            diagonal = score_matrix[i - 1][j - 1] + match_score
+            left = score_matrix[i][j - 1] + gap_penalty
+            up = score_matrix[i - 1][j] + gap_penalty
+
+            max_score = max(diagonal, left, up)
+            score_matrix[i][j] = max_score
+
+            # Store traceback information
+            if max_score == diagonal:
+                traceback_matrix[i][j] = 'D'  # 'D' represents going diagonal
+            elif max_score == left:
+                traceback_matrix[i][j] = 'L'
+            else:
+                traceback_matrix[i][j] = 'U'
+
+    # Traceback to construct the aligned sequences
+    aligned_x = ''
+    aligned_y = ''
+    i, j = n, m
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and traceback_matrix[i][j] == 'D':
+            aligned_x = x[i - 1] + aligned_x
+            aligned_y = y[j - 1] + aligned_y
+            i -= 1
+            j -= 1
+        elif j > 0 and traceback_matrix[i][j] == 'L':
+            aligned_x = '-' + aligned_x
+            aligned_y = y[j - 1] + aligned_y
+            j -= 1
+        else:
+            aligned_x = x[i - 1] + aligned_x
+            aligned_y = '-' + aligned_y
+            i -= 1
+
+    return aligned_x, aligned_y
