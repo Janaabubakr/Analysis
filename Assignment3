@@ -1,0 +1,90 @@
+from collections import deque
+
+def depth_first_search(graph, start, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(start)
+    print(start, end=' ')
+    for neighbor in sorted(graph[start]):
+        if neighbor not in visited:
+            depth_first_search(graph, neighbor, visited)
+
+def breadth_first_search(graph, start):
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+    while queue:
+        node = queue.popleft()
+        print(node, end=' ')
+        for neighbor in sorted(graph[node]):
+            if neighbor not in visited:
+                queue.append(neighbor)
+                visited.add(neighbor)
+
+def detect_cycles(graph):
+    visited = set()
+    stack = []
+    in_path = set()
+
+    def dfs_with_cycle_detection(node):
+        visited.add(node)
+        in_path.add(node)
+        stack.append(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                dfs_with_cycle_detection(neighbor)
+            elif neighbor in in_path:
+                cycle_start = stack.index(neighbor)
+                cycle = stack[cycle_start:]
+                print("Cycle:", " ".join(map(str, cycle)))
+
+        in_path.remove(node)
+        stack.pop()
+
+    for node in graph:
+        if node not in visited:
+            dfs_with_cycle_detection(node)
+
+def test_bipartiteness(graph, start):
+    color = {}
+    queue = deque([(start, 'red')])
+
+    while queue:
+        node, c = queue.popleft()
+        if node not in color:
+            color[node] = c
+            queue.extend((neighbor, 'blue' if c == 'red' else 'red') for neighbor in sorted(graph[node]))
+
+    if all(color[neighbor] != color[node] for node in graph for neighbor in graph[node]):
+        print("Graph is bipartite. Coloring:", color)
+    else:
+        print("Graph is not bipartite.")
+
+def is_tree(graph):
+    visited = set()
+    stack = [(list(graph.keys())[0], None)]
+
+    while stack:
+        node, parent = stack.pop()
+
+        if node in visited:
+            return False  # Graph has a cycle
+
+        visited.add(node)
+
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                stack.append((neighbor, node))
+
+    return len(visited) == len(graph)
+
+graph = {
+    1: [3, 4],
+    2: [1, 3],
+    3: [4],
+    4: [1, 2]
+}
+
+
+//time complexity of O(V + E)
